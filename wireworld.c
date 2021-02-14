@@ -46,20 +46,25 @@ Cell wireworld_rule(const Board *prev, int row, int col)
         return (nbor_heads == 1 || nbor_heads == 2) ? HEAD : CONDUCTOR;
     default:
         assert(false && "wireworld_rule: unreachable");
+        return EMPTY;
     }
 }
 
 int main(int argc, char **argv)
 {
+    char arg1_default[] = "./images/ww800x600.gif\x0";
+    char *arg1_copy = arg1_default;
     if (argc < 2) {
         fprintf(stderr, "USAGE: ./wireworld <image.gif>\n");
         fprintf(stderr, "ERROR: no input is provided\n");
-        exit(1);
+        //exit(1);
     }
+    else
+        arg1_copy = argv[1];
 
     Board board = {0};
 
-    life_load_board_from_image(&board, argv[1], CELL_COUNT, parse_color);
+    life_load_board_from_image(&board, arg1_copy, CELL_COUNT, parse_color);
 
     life_go(&board,
             wireworld_rule,

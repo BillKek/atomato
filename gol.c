@@ -2,13 +2,15 @@
 #include <stdbool.h>
 #include "./life.h"
 
-typedef enum {
+typedef enum
+{
     DED = 0,
     ALIVE,
     CELL_COUNT
 } Gol_Cell;
 
-Color cell_color[CELL_COUNT] = {
+Color cell_color[CELL_COUNT] =
+{
     [DED] = 0,
     [ALIVE] = PINK_COLOR
 };
@@ -17,25 +19,30 @@ Cell gol_rule(const Board *prev, int row, int col)
 {
     const int nbors = life_board_nbors(prev, row, col, ALIVE);
 
-    switch (prev->cells[row][col]) {
+    switch (prev->cells[row][col])
+    {
     case DED:
         return nbors == 3 ? ALIVE : DED;
     case ALIVE:
         return nbors == 2 || nbors == 3 ? ALIVE : DED;
     default:
         assert(false && "next_board: unreachable");
+        return DED;
     }
 }
 
-static const Cell glider[3][3] = {
+static const Cell glider[3][3] =
+{
     {DED,   ALIVE,   DED},
     {DED,     DED, ALIVE},
     {ALIVE, ALIVE, ALIVE},
 };
 
-int main()
+Board board = {0};
+int main(int argc, char *argv[])
 {
-    Board board = {0};
+    (void) argc;
+    (void) argv;
     life_copy_shape_to(&board, 0, 0, 3, 3, glider);
     life_copy_shape_to(&board, 4, 4, 3, 3, glider);
     life_copy_shape_to(&board, 8, 8, 3, 3, glider);

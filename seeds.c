@@ -31,8 +31,10 @@ static const Cell glider[4][2] = {
     {ON, OFF},
 };
 
-int main(void)
+int main(int argc, char *argv[])
 {
+    (void) argc;
+    (void) argv;
     Board board = {0};
 
     for (int i = 0; i < 10; ++i) {
@@ -44,4 +46,5 @@ int main(void)
     }
 
     life_go(&board, seeds_rule, CELL_COUNT, cell_color, "seeds.png");
+return 0;
 }

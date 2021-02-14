@@ -99,8 +99,10 @@ void board_render(Square *context, const Board *board)
     }
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
+    (void) argc;
+    (void) argv;
     Square context = {0};
 
     square_begin(&context);
