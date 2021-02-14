@@ -16,14 +16,14 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "./stb_image_write.h"
 
-typedef int Cell;
+typedef int32_t Cell;
 
 typedef struct
 {
-    Cell cells[ROWS][COLS];
+    Cell cells[ROWS*COLS];
 } Board;
 
-int life_board_nbors(const Board *board, int row0, int col0, Cell cell)
+int life_board_nbors(Cell* cells, int row0, int col0, Cell cell)
 {
     int result = 0;
     for (int drow = -1; drow <= 1; ++drow)
@@ -35,7 +35,7 @@ int life_board_nbors(const Board *board, int row0, int col0, Cell cell)
                 const int row = mod(row0 + drow, ROWS);
                 const int col = mod(col0 + dcol, COLS);
 
-                if (board->cells[row][col] == cell)
+                if (cells[iter_cell(col,row)] == cell)
                 {
                     result += 1;
                 }
@@ -51,12 +51,12 @@ void life_random_board(Board *board, int cell_state)
     {
         for (int col = 0; col < COLS; ++col)
         {
-            board->cells[row][col] = rand() % cell_state;
+            board->cells[iter_cell(col,row)] = rand() % cell_state;
         }
     }
 }
 
-typedef Cell (*Life_Rule)(const Board *prev, int row, int col);
+typedef void (*Life_Rule)(Cell* prev, Cell* next);
 
 typedef struct
 {
@@ -79,7 +79,7 @@ void life_copy_shape_to(Board *board,
         {
             const int row = mod(row0 + drow, ROWS);
             const int col = mod(col0 + dcol, COLS);
-            board->cells[row][col] = shape[drow][dcol];
+            board->cells[iter_cell(col,row)] = shape[drow][dcol];
         }
     }
 }
@@ -94,7 +94,7 @@ void life_save_board_to_image(const Board *board, const char *file_path,
     {
         for (int col = 0; col < COLS; ++col)
         {
-            data[row][col] = cells_color[board->cells[row][col]];
+            data[row][col] = cells_color[board->cells[iter_cell(col,row)]];
         }
     }
 
@@ -135,7 +135,7 @@ void life_load_board_from_image(Board *board, const char *file_path,
             {
                 if (cells_color[cell] == color)
                 {
-                    board->cells[row][col] = cell;
+                    board->cells[iter_cell(col,row)] = cell;
                     found = true;
                 }
             }
@@ -171,7 +171,7 @@ void life_go(const Board *init_board,
             int const row = context.square.cell_row;
             int const col = context.square.cell_col;
             Board *const board = &context.boards[context.board_current];
-            board->cells[row][col] = mod(board->cells[row][col] + 1, context.cells_count);
+            board->cells[iter_cell(col,row)] = mod(board->cells[iter_cell(col,row)] + 1, context.cells_count);
         }
 
         if (context.square.core.keyboard['r'])
@@ -193,24 +193,12 @@ void life_go(const Board *init_board,
         {
             const size_t count = square_next_gen_count(&context.square);
 
-            for (size_t i = 0; i < count; ++i)
+            for (size_t i = 0; i < count*100; ++i)
             {
                 const Board *prev = &context.boards[context.board_current];
                 Board *next = &context.boards[1 - context.board_current];
 
-                // TODO: speedup simulation
-                // Ideas:
-                // - [x] -O3
-                // - [x] Several states per tick
-                // - [ ] Don't redraw cells that didn't change
-                // - [ ] Parallelization
-                for (int row = 0; row < ROWS; ++row)
-                {
-                    for (int col = 0; col < COLS; ++col)
-                    {
-                        next->cells[row][col] = context.rule(prev, row, col);
-                    }
-                }
+                context.rule(prev->cells, next->cells);
 
                 context.board_current = 1 - context.board_current;
             }
@@ -226,7 +214,7 @@ void life_go(const Board *init_board,
                     square_fill_cell(
                         &context.square,
                         row, col,
-                        context.cells_color[board->cells[row][col]]);
+                        context.cells_color[board->cells[iter_cell(col,row)]]);
                 }
             }
         }

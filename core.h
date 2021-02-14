@@ -49,6 +49,8 @@
 
 #include "./style.h"
 
+#define iter_cell(col,row) (row*COLS + col) // linearization of memory
+
 int scc(int code)
 {
     if (code < 0) {
@@ -300,9 +302,12 @@ size_t core_next_gen_count(Core *context)
     return result;
 }
 
+#define mod(a,b) ((a % b + b) % b);
+/*
 int mod(int a, int b)
 {
     return (a % b + b) % b;
 }
+*/
 
 #endif  // CORE_H_
