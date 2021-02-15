@@ -1,16 +1,14 @@
 # Cellular Tomato
 
-A collection of different [Cellular Automata](https://en.wikipedia.org/wiki/Cellular_automaton) implementations for recreational purposes
+One of [Cellular Automata](https://en.wikipedia.org/wiki/Cellular_automaton) implementation for recreational purposes. This is so called [Wireworld](https://en.wikipedia.org/wiki/Wireworld).
 
 ## Quick Start
 
 ```console
-$ make
+$ mingw32-make.exe 
 $ ./wireworld.exe
 ```
 
-## Tomatos
-
-- [x] [Wireworld](https://en.wikipedia.org/wiki/Wireworld)
+## Expected Result
 
 ![wireworld](./wireworld.png)
