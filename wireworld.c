@@ -34,14 +34,12 @@ Color parse_color[CELL_COUNT] =
     [CONDUCTOR] = 0xFF0080FF,
 };
 
-void wireworld_rule(Cell* prev, Cell* next)
+void wireworld_rule_1(Cell* prev, Cell* next)
 {
     for (int row = 0; row < ROWS; ++row)
     {
         for (int col = 0; col < COLS; ++col)
         {
-            const int nbor_heads = life_board_nbors(prev, row, col, HEAD);
-
             switch (prev[iter_cell(col,row)])
             {
             case EMPTY:
@@ -54,10 +52,59 @@ void wireworld_rule(Cell* prev, Cell* next)
                 next[iter_cell(col,row)] = CONDUCTOR;
                 break;
             case CONDUCTOR:
+            {
+                int nbor_heads;
+                nbor_heads = life_board_nbors(prev, row, col, HEAD);
                 next[iter_cell(col,row)] =  (nbor_heads == 1 || nbor_heads == 2) ? HEAD : CONDUCTOR;
+            }
+            break;
+//            default: // opt.out.
+                //              assert(false && "wireworld_rule: unreachable");
+            }
+
+
+        }
+    }
+}
+
+void wireworld_rule(Cell* prev, Cell* next)
+{
+    static int fitst = 1;
+
+    if (fitst)
+    {
+        fitst = 0;
+        wireworld_rule_1(prev,next);
+    }
+    else
+    {
+        for (int row = 0; row < ROWS; ++row)
+        {
+            for (int col = 0; col < COLS; ++col)
+            {
+                switch (prev[iter_cell(col,row)])
+                {
+//                case EMPTY:
+  //                  next[iter_cell(col,row)] = EMPTY;
+    //                break;
+                case HEAD:
+                    next[iter_cell(col,row)] = TAIL;
+                    break;
+                case TAIL:
+                    next[iter_cell(col,row)] = CONDUCTOR;
+                    break;
+                case CONDUCTOR:
+                {
+                    int nbor_heads;
+                    nbor_heads = life_board_nbors(prev, row, col, HEAD);
+                    next[iter_cell(col,row)] =  (nbor_heads == 1 || nbor_heads == 2) ? HEAD : CONDUCTOR;
+                }
                 break;
-            default:
-                assert(false && "wireworld_rule: unreachable");
+//            default: // opt.out.
+                    //              assert(false && "wireworld_rule: unreachable");
+                }
+
+
             }
         }
     }

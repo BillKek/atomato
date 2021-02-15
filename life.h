@@ -16,14 +16,14 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "./stb_image_write.h"
 
-typedef int32_t Cell;
+typedef int8_t Cell;
 
 typedef struct
 {
-    Cell cells[ROWS*COLS];
+    Cell cells[ROWS*(COLS+1)]; // tail for opt.leadout
 } Board;
 
-int life_board_nbors(Cell* cells, int row0, int col0, Cell cell)
+inline int life_board_nbors(Cell* cells, int row0, int col0, Cell cell)
 {
     int result = 0;
     for (int drow = -1; drow <= 1; ++drow)
@@ -193,9 +193,9 @@ void life_go(const Board *init_board,
         {
             const size_t count = square_next_gen_count(&context.square);
 
-            for (size_t i = 0; i < count*100; ++i)
+            for (size_t i = 0; i < count*30; ++i)
             {
-                const Board *prev = &context.boards[context.board_current];
+                Board *prev = &context.boards[context.board_current];
                 Board *next = &context.boards[1 - context.board_current];
 
                 context.rule(prev->cells, next->cells);
