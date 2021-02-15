@@ -6,11 +6,11 @@ A collection of different [Cellular Automata](https://en.wikipedia.org/wiki/Cell
 
 ```console
 $ make
-$ ./rule110
-$ ./gol
+$ ./wireworld.exe
 ```
 
 ## Tomatos
 
 - [x] [Wireworld](https://en.wikipedia.org/wiki/Wireworld)
 
+![wireworld](./thumbnails/wireworld.png)
