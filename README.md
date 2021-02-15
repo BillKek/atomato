@@ -13,4 +13,4 @@ $ ./wireworld.exe
 
 - [x] [Wireworld](https://en.wikipedia.org/wiki/Wireworld)
 
-![wireworld](./thumbnails/wireworld.png)
+![wireworld](./wireworld.png)
