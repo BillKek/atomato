@@ -5,8 +5,8 @@ One of [Cellular Automata](https://en.wikipedia.org/wiki/Cellular_automaton) imp
 ## Quick Start
 
 ```console
-$ mingw32-make.exe 
-$ ./wireworld.exe
+> mingw32-make.exe 
+> ./wireworld.exe
 ```
 
 ## Expected Result
